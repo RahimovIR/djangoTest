@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+{% load staticfiles %}
+<script src="{% static "jquery-2.1.1.min.js" %}"></script>
+<script src="{% static "jquery.pickmeup.min.js" %}"></script>
+<link href="{% static "pickmeup.min.css" %}" type="text/css" rel="stylesheet" />
+<script src="{% static "main.js" %}"></script>
+<body>
+{% if tables %}
+    <table border="1"><tr>
+        <td>
+            <ul>
+            {% for table in tables %}
+                <li><a href="/{{ table.model_name }}" class="link">{{ table.verbose_name }}</a></li>
+            {% endfor %}
+            </ul>
+        </td>
+        <td>
+            <div id="table"></div>
+            <div id="new"></div>
+        </td>
+    </tr></table>
+{% else %}
+    <p>Not found tables</p>
+{% endif %}
+</body>
+</html>
+

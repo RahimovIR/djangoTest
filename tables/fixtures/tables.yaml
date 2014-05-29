@@ -1,0 +1,12 @@
+-   fields: {date_joined: 2014-05-15, name: af, paycheck: 536}
+    model: tables.users
+    pk: 2
+-   fields: {date_joined: 2014-05-09, name: sdfg, paycheck: 500}
+    model: tables.users
+    pk: 4
+-   fields: {department: asdf, spots: 564}
+    model: tables.rooms
+    pk: 2
+-   fields: {department: sdfsa, spots: 543}
+    model: tables.rooms
+    pk: 3
