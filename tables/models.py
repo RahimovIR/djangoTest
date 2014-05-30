@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 import sys
 import yaml
 import datetime
@@ -44,7 +45,7 @@ ya = None
 
 if not('test' in sys.argv):
     try:
-        with open('models.yaml', 'r', encoding='utf-8') as yaml_file:
+        with open(settings.MODEL_FILENAME, 'r', encoding='utf-8') as yaml_file:
             ya = yaml.safe_load(yaml_file)
     except FileNotFoundError:
         print('Yaml file not found')
