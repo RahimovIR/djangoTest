@@ -4,8 +4,8 @@
 # up again.  This script gets executed directly, so it could be python, php,
 # ruby, etc.
 
-echo "Executing 'ln -s ${HOME}app-deployments/db/db.sqlite3 ${OPENSHIFT_REPO_DIR}/db.sqlite3'"
-ln -s ${HOME}app-deployments/db/db.sqlite3 ${OPENSHIFT_REPO_DIR}/db.sqlite3
+echo "Executing 'ln -s ${OPENSHIFT_DATA_DIR}db.sqlite3 ${OPENSHIFT_REPO_DIR}db.sqlite3'"
+ln -s ${OPENSHIFT_DATA_DIR}db.sqlite3 ${OPENSHIFT_REPO_DIR}db.sqlite3
  
 echo "Executing 'python ${OPENSHIFT_REPO_DIR}manage.py collectstatic --noinput -v0'"
 python "$OPENSHIFT_REPO_DIR"manage.py collectstatic --noinput -v0
