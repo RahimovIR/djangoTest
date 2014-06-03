@@ -67,7 +67,16 @@ function genTable(json, table){
 
         tr.append($('<td>').append(obj['id']));
         for (i=0; i < headerKeys.length; i++){
-            var td = $('<td>').click(clickTd);
+            var td = $('<td id=' + headerKeys[i] + '.' + fieldType[headerKeys[i]] + '>').click(clickTd);
+            if (fieldType[headerKeys[i]] == 'datetime'){
+                td.pickmeup(
+                    {format:'Y-m-d', change: function(val){
+                        $('#editField').val(val);
+                        $(this).pickmeup('hide');
+                        updateRow();
+                    }}
+                );
+            }
             tr.append(td.append( obj[headerKeys[i]] ));
         }
         var delbutton = $('<input type="button" value="del" id="delButton'+ obj['id'] +'"/>');
@@ -121,9 +130,6 @@ function clickTd(){
         if (fieldType[headerKeys[headerIndex]] == 'datetime'){
             var inputField = $('<input type="datetime" id="editField" value="' + value + '" ' +
                 'onkeypress="handleKeyPress(event)" + onblur="cancelEdit()">');
-            inputField.pickmeup({format:'Y-m-d', change: function(val){
-                inputField.val(val).pickmeup('hide');
-            }});
         }else{
             var inputField = $('<input type="text" id="editField" value="' + value + '" ' +
                 'onkeypress="handleKeyPress(event)" + onblur="cancelEdit()">');
@@ -141,6 +147,7 @@ function handleKeyPress(event){
 }
 
 function updateRow(){
+    editField[editField['editIndex']] = $('#editField').val();
     var values = {};
     for (i=0; i<headerKeys.length; i++){
         values[headerKeys[i]] = editField[i + 1];
