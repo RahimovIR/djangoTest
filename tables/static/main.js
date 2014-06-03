@@ -11,7 +11,7 @@ var editField = {};
 $(function(){
 
     $("a.link").click(function(){
-        path = $(this).attr("href");
+        path = $(this).attr("href") + '/';
         headerKeys = [];
         fieldType = [];
         verbos_name = [];
@@ -47,7 +47,7 @@ function genHeader(table){
     }
 
     if ( headerKeys.length == 0){
-        $.getJSON('api/tables' + path + '/schema', {},function(json){
+        $.getJSON('api/tables' + path + 'schema/', {},function(json){
                 $.each(json.fields.field_order, function(index, obj){
                     headerKeys[index] = obj;
                     fieldType[obj] = json.fields[obj].type;
@@ -160,21 +160,22 @@ function postJson(value){
     var jsonValue = JSON.stringify(value);
     $.ajax({
         type: 'POST',
-        url: 'api/tables' + path + '/',
+        url: 'api/tables' + path,
         data: jsonValue,
-        success: updateData(),
+        success: console.log('send post'),
         dataType: "application/json",
         processData:  false,
         async: false,
         contentType: "application/json"
     });
+    updateData();
 }
 
 function deleteJson(id){
     $.ajax({
         type: 'DELETE',
-        url: 'api/tables' + path + '/' + id,
-        success: console.log('suc'),
+        url: 'api/tables' + path + id,
+        success: console.log('send delete'),
         dataType: "application/json",
         processData:  false,
         async: false,
