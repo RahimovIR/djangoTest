@@ -7,6 +7,7 @@ var headerKeys = [];
 var fieldType = [];
 var verbos_name = [];
 var editField = {};
+$.ajaxSetup({async: false});
 
 $(function(){
 
