@@ -193,5 +193,6 @@ function deleteJson(id){
 }
 
 function cancelEdit(){
-    updateData();
+    var td = $('#editField').first().parent();
+    td.html(editField['value']);
 }
