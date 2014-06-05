@@ -221,7 +221,7 @@ function postJson(value){
 function deleteJson(id){
     $.ajax({
         type: 'DELETE',
-        url: 'api/tables' + path + id,
+        url: 'api/tables' + path + id + '/',
         success: console.log('send delete'),
         dataType: "application/json",
         processData:  false,
