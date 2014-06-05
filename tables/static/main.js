@@ -4,8 +4,8 @@
 
 var path = '';
 var headerKeys = [];
-var fieldType = [];
-var verbos_name = [];
+var fieldType = {};
+var verbos_name = {};
 var editField = {};
 $.ajaxSetup({async: false});
 
@@ -14,8 +14,8 @@ $(function(){
     $("a.link").click(function(){
         path = $(this).attr("href") + '/';
         headerKeys = [];
-        fieldType = [];
-        verbos_name = [];
+        fieldType = {};
+        verbos_name = {};
         editField = {};
         updateData();
         return false;
@@ -32,7 +32,6 @@ function updateData(){
         genTable(json, table);
         $("#table").html(table);
     });
-
 }
 
 function genHeader(table){
@@ -101,7 +100,7 @@ function genTable(json, table){
             }});
             var td =  $('<td>').append(inputField);
         }else{
-            var td =  $('<td>').append($('<input type="text"  id=' + headerKeys[i] + '>'));
+            var td =  $('<td>').append($('<input type="text" id=' + headerKeys[i] + ' name=' + headerKeys[i] + '>'));
         }
         tr.append(td);
     }
@@ -146,22 +145,62 @@ function handleKeyPress(event){
     }
 }
 
+function validValue(value, type){
+    if(type == 'integer'){
+        if(parseFloat(value) == parseInt(value, 10) && !isNaN(value)){
+            return '';
+        }else{
+            return value + ' is not integer';
+        }
+    }
+    if(type == 'datetime'){
+        var formats = ['YYYY-MM-DD'];
+        if(moment(value, formats).isValid()){
+            return '';
+        }else{
+            return value + ' is not date';
+        }
+    }
+    if(type == 'string'){
+        return '';
+    }
+}
+
 function updateRow(){
     editField[editField['editIndex']] = $('#editField').val();
     var values = {};
+    var errorStr = '';
     for (i=0; i<headerKeys.length; i++){
-        values[headerKeys[i]] = editField[i + 1];
+        var fname = headerKeys[i];
+        var ftype = fieldType[fname];
+        var value = editField[i + 1];
+        errorStr += validValue(value, ftype);
+        values[headerKeys[i]] = value;
     }
     values['id'] = editField[0];
-    postJson(values);
+    if (errorStr.length == 0){
+        postJson(values);
+    }else{
+        console.log(errorStr);
+    }
 }
 
 function addNewRow(){
     var values = {};
+    var errorStr = '';
     for (i=0; i<headerKeys.length; i++){
-        values[headerKeys[i]] = $("#" + headerKeys[i]).val();
+        var fname = headerKeys[i];
+        var ftype = fieldType[fname];
+        var value = $("#" + headerKeys[i]).val();
+        errorStr += validValue(value, ftype);
+
+        values[headerKeys[i]] = value;
     }
-    postJson(values);
+    if (errorStr.length == 0){
+        postJson(values);
+    }else{
+        console.log(errorStr);
+    }
 }
 
 function postJson(value){
