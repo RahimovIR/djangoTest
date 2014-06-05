@@ -7,27 +7,32 @@ var headerKeys = [];
 var fieldType = {};
 var verbos_name = {};
 var editField = {};
+function writeLog(errorStr) {
+    $('#errorLog').append(errorStr);
+    $('#errorLog').append('</br>');
+}
 $.ajaxSetup({
-    dataType: "application/json",
+    dataType: "json",
     processData:  false,
     async: false,
     contentType: "application/json",
     error: function(jqXHR, exception) {
-            if (jqXHR.status === 0) {
-                console.log('Not connect.\n Verify Network.');
-            } else if (jqXHR.status == 404) {
-                console.log('Requested page not found. [404]');
-            } else if (jqXHR.status == 500) {
-                console.log('Internal Server Error [500].');
-            } else if (exception === 'parsererror') {
-                console.log('Requested JSON parse failed.');
-            } else if (exception === 'timeout') {
-                console.log('Time out error.');
-            } else if (exception === 'abort') {
-                console.log('Ajax request aborted.');
-            } else {
-                console.log('Uncaught Error.\n' + jqXHR.responseText);
-            }
+        var errorHead = 'json error: ';
+        if (jqXHR.status === 0) {
+            writeLog(errorHead + 'Not connect.\n Verify Network.');
+        } else if (jqXHR.status == 404) {
+            writeLog(errorHead + 'Requested page not found. [404]');
+        } else if (jqXHR.status == 500) {
+            writeLog(errorHead + 'Internal Server Error [500].');
+        } else if (exception === 'parsererror') {
+            writeLog(errorHead + 'Requested JSON parse failed.');
+        } else if (exception === 'timeout') {
+            writeLog(errorHead + 'Time out error.');
+        } else if (exception === 'abort') {
+            writeLog(errorHead + 'Ajax request aborted.');
+        } else {
+            writeLog(errorHead + 'Uncaught Error.\n' + jqXHR.responseText);
+        }
     }
 });
 
@@ -104,7 +109,7 @@ function genTable(json, table){
         var delbutton = $('<input type="button" value="del" id="delButton'+ obj['id'] +'"/>');
         delbutton.click(function(){
             id = $(this)[0].id.split('delButton')[1];
-            console.log($(this)[0].id.split('delButton')[1]);
+//            console.log($(this)[0].id.split('delButton')[1]);
             deleteJson(id);
         });
         td = $('<td>');
@@ -172,61 +177,72 @@ function handleKeyPress(event){
 }
 
 function validValue(value, type){
+    var errorHead = 'valid error: ';
+    if(value ==''){
+        writeLog(errorHead + 'field empty');
+        return false;
+    }
     if(type == 'integer'){
         if(parseFloat(value) == parseInt(value, 10) && !isNaN(value)){
-            return '';
+            return true;
         }else{
-            return value + ' is not integer';
+            writeLog(errorHead + value + ' is not integer');
+            return false;
         }
     }
     if(type == 'datetime'){
+        if( ! /^\d{4}-\d{2}-\d{2}$/.test(value)){
+            writeLog(errorHead + value + ' is not date1');
+            return false;
+        }
         var formats = ['YYYY-MM-DD'];
         if(moment(value, formats).isValid()){
-            return '';
+            return true;
         }else{
-            return value + ' is not date';
+            writeLog(errorHead + value + ' is not date2');
+            return false;
         }
     }
     if(type == 'string'){
-        return '';
+        return true;
     }
 }
 
 function updateRow(){
     editField[editField['editIndex']] = $('#editField').val();
     var values = {};
-    var errorStr = '';
+    var fieldsValid = true;
     for (i=0; i<headerKeys.length; i++){
         var fname = headerKeys[i];
         var ftype = fieldType[fname];
         var value = editField[i + 1];
-        errorStr += validValue(value, ftype);
+        if( ! validValue(value, ftype)){
+            fieldsValid = false;
+        }
         values[headerKeys[i]] = value;
     }
     values['id'] = editField[0];
-    if (errorStr.length == 0){
+    if (fieldsValid){
         $('td').pickmeup('hide');
         postJson(values);
-    }else{
-        console.log(errorStr);
     }
 }
 
 function addNewRow(){
     var values = {};
     var errorStr = '';
+    var fieldsValid = true;
     for (i=0; i<headerKeys.length; i++){
         var fname = headerKeys[i];
         var ftype = fieldType[fname];
         var value = $("#" + headerKeys[i]).val();
-        errorStr += validValue(value, ftype);
-
+        if( ! validValue(value, ftype)){
+            fieldsValid = false;
+        }
         values[headerKeys[i]] = value;
     }
-    if (errorStr.length == 0){
+    if (fieldsValid){
         postJson(values);
-    }else{
-        console.log(errorStr);
     }
 }
 
@@ -236,7 +252,7 @@ function postJson(value){
         type: 'POST',
         url: 'api/tables' + path,
         data: jsonValue,
-        success: console.log('send post')
+        success: writeLog('info: send post')
     });
     updateData();
 }
@@ -245,7 +261,7 @@ function deleteJson(id){
     $.ajax({
         type: 'DELETE',
         url: 'api/tables' + path + id + '/',
-        success: console.log('send delete')
+        success: writeLog('info: send delete')
     });
     updateData();
 }
