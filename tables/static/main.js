@@ -8,7 +8,7 @@ var fieldType = {};
 var verbos_name = {};
 var editField = {};
 $.ajaxSetup({
-    dataType: "json",
+    dataType: "application/json",
     processData:  false,
     async: false,
     contentType: "application/json",
@@ -205,6 +205,7 @@ function updateRow(){
     }
     values['id'] = editField[0];
     if (errorStr.length == 0){
+        $('td').pickmeup('hide');
         postJson(values);
     }else{
         console.log(errorStr);
@@ -250,6 +251,7 @@ function deleteJson(id){
 }
 
 function cancelEdit(){
+    $('td').pickmeup('hide');
     var td = $('#editField').first().parent();
     td.html(editField['value']);
 }
