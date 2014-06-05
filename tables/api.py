@@ -8,6 +8,7 @@ for model in my_models:
         queryset = model.objects.all()
         resource_name = model.model_name
         authorization = Authorization()
+        always_return_data = True
 
     def build_schema(self):
         base_schema = super(ModelResource, self).build_schema()

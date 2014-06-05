@@ -7,9 +7,31 @@ var headerKeys = [];
 var fieldType = {};
 var verbos_name = {};
 var editField = {};
-$.ajaxSetup({async: false});
+$.ajaxSetup({
+    dataType: "json",
+    processData:  false,
+    async: false,
+    contentType: "application/json",
+    error: function(jqXHR, exception) {
+            if (jqXHR.status === 0) {
+                console.log('Not connect.\n Verify Network.');
+            } else if (jqXHR.status == 404) {
+                console.log('Requested page not found. [404]');
+            } else if (jqXHR.status == 500) {
+                console.log('Internal Server Error [500].');
+            } else if (exception === 'parsererror') {
+                console.log('Requested JSON parse failed.');
+            } else if (exception === 'timeout') {
+                console.log('Time out error.');
+            } else if (exception === 'abort') {
+                console.log('Ajax request aborted.');
+            } else {
+                console.log('Uncaught Error.\n' + jqXHR.responseText);
+            }
+    }
+});
 
-$(function(){
+$(document).ready(function(){
 
     $("a.link").click(function(){
         path = $(this).attr("href") + '/';
@@ -20,7 +42,6 @@ $(function(){
         updateData();
         return false;
     });
-
 });
 
 function updateData(){
@@ -33,6 +54,8 @@ function updateData(){
         $("#table").html(table);
     });
 }
+
+// Generate tables
 
 function genHeader(table){
     function _genHeader(table){
@@ -212,11 +235,7 @@ function postJson(value){
         type: 'POST',
         url: 'api/tables' + path,
         data: jsonValue,
-        success: console.log('send post'),
-        dataType: "application/json",
-        processData:  false,
-        async: false,
-        contentType: "application/json"
+        success: console.log('send post')
     });
     updateData();
 }
@@ -225,11 +244,7 @@ function deleteJson(id){
     $.ajax({
         type: 'DELETE',
         url: 'api/tables' + path + id + '/',
-        success: console.log('send delete'),
-        dataType: "application/json",
-        processData:  false,
-        async: false,
-        contentType: "application/json"
+        success: console.log('send delete')
     });
     updateData();
 }
