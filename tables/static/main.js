@@ -128,10 +128,10 @@ function clickTd(){
         headerIndex = editField['editIndex'] - 1;
         if (fieldType[headerKeys[headerIndex]] == 'datetime'){
             var inputField = $('<input type="datetime" id="editField" value="' + value + '" ' +
-                'onkeypress="handleKeyPress(event)" + onblur="cancelEdit()">');
+                'onkeyup="handleKeyPress(event)" + onblur="cancelEdit()">');
         }else{
             var inputField = $('<input type="text" id="editField" value="' + value + '" ' +
-                'onkeypress="handleKeyPress(event)" + onblur="cancelEdit()">');
+                'onkeyup="handleKeyPress(event)" + onblur="cancelEdit()">');
         }
         $(this).html(inputField);
         $(this).children().first().focus();
@@ -139,9 +139,12 @@ function clickTd(){
 }
 
 function handleKeyPress(event){
-    if(event.keyCode === 13){
+    if(event.keyCode === 13){ // enter
         editField[editField['editIndex']] = $('#editField').val();
         updateRow();
+    }
+    if(event.keyCode === 27){ // esc
+        cancelEdit();
     }
 }
 
