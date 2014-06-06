@@ -10,3 +10,11 @@ rooms:
     fields:
         - {id: department, title: Отдел, type: char}
         - {id: spots, title: Вместимость, type: int}
+
+users2:
+    title: Пользователи2
+    fields:
+        - {id: name, title: Имя, type: char}
+        - {id: paycheck, title: Зарплата, type: int}
+        - {id: date_joined, title: Дата поступления на работу, type: date}
+        - {id: date_fired, title: Дата увольнения, type: date}

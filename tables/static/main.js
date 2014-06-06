@@ -23,7 +23,9 @@ $.ajaxSetup({
         } else if (jqXHR.status == 404) {
             writeLog(errorHead + 'Requested page not found. [404]');
         } else if (jqXHR.status == 500) {
-            writeLog(errorHead + 'Internal Server Error [500].');
+            writeLog(errorHead + 'Internal Server Error [500]' + jqXHR.statusText);
+        } else if (jqXHR.status == 501) {
+            writeLog(errorHead + 'Internal Server Error [501] ' + jqXHR.statusText);
         } else if (exception === 'parsererror') {
             writeLog(errorHead + 'Requested JSON parse failed.');
         } else if (exception === 'timeout') {
@@ -178,6 +180,7 @@ function handleKeyPress(event){
 
 function validValue(value, type){
     var errorHead = 'valid error: ';
+    return true;
     if(value ==''){
         writeLog(errorHead + 'field empty');
         return false;
