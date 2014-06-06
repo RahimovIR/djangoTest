@@ -28,15 +28,18 @@ def generate_models(ya):
         my_attributes['Meta'] = Meta
         my_attributes['__module__'] = __name__
         order_fields = {}
+        fields_type = {}
         fields_verbos_name = {}
         i = 0
         for field in table['fields']:
             field_id, field_type, title = field['id'], field['type'], field['title']
             my_attributes[field_id] = choice_field(field_type, title)
+            fields_type[field_id] = field_type
             fields_verbos_name[field_id] = title
             order_fields[i] = field_id
             i += 1
         my_attributes['order_fields'] = order_fields
+        my_attributes['fields_type'] = fields_type
         my_attributes['fields_verbos_name'] = fields_verbos_name
         my_models.append(type(table_name, (models.Model,), my_attributes))
 

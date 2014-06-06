@@ -19,13 +19,15 @@ $.ajaxSetup({
     error: function(jqXHR, exception) {
         var errorHead = 'json error: ';
         if (jqXHR.status === 0) {
-            writeLog(errorHead + 'Not connect.\n Verify Network.');
+            writeLog(errorHead + 'Not connect. Verify Network.');
+        } else if (jqXHR.status == 400) {
+            writeLog(errorHead + 'Bad Requested: ' + jqXHR.responseText);
         } else if (jqXHR.status == 404) {
             writeLog(errorHead + 'Requested page not found. [404]');
         } else if (jqXHR.status == 500) {
-            writeLog(errorHead + 'Internal Server Error [500]' + jqXHR.statusText);
+            writeLog(errorHead + 'Internal Server Error [500]: ' + jqXHR.statusText);
         } else if (jqXHR.status == 501) {
-            writeLog(errorHead + 'Internal Server Error [501] ' + jqXHR.statusText);
+            writeLog(errorHead + 'Internal Server Error [501]: ' + jqXHR.statusText);
         } else if (exception === 'parsererror') {
             writeLog(errorHead + 'Requested JSON parse failed.');
         } else if (exception === 'timeout') {
@@ -33,7 +35,7 @@ $.ajaxSetup({
         } else if (exception === 'abort') {
             writeLog(errorHead + 'Ajax request aborted.');
         } else {
-            writeLog(errorHead + 'Uncaught Error.\n' + jqXHR.responseText);
+            writeLog(errorHead + 'Uncaught Error: ' + jqXHR.responseText);
         }
     }
 });
@@ -180,7 +182,6 @@ function handleKeyPress(event){
 
 function validValue(value, type){
     var errorHead = 'valid error: ';
-    return true;
     if(value ==''){
         writeLog(errorHead + 'field empty');
         return false;
